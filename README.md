@@ -1,4 +1,5 @@
 # manabi-admin
+
 まなびリンク管理者画面
 
 This is a [Next.js](https://nextjs.org) project with enhanced development error detection.
@@ -10,7 +11,9 @@ This is a [Next.js](https://nextjs.org) project with enhanced development error 
 ### 追加された設定ファイル
 
 #### 1. `tsconfig.json`
+
 TypeScriptの厳密な型チェック設定を追加：
+
 - `noUnusedLocals`: 未使用のローカル変数を検知
 - `noUnusedParameters`: 未使用のパラメータを検知
 - `noFallthroughCasesInSwitch`: switch文のfall-throughを検知
@@ -19,19 +22,24 @@ TypeScriptの厳密な型チェック設定を追加：
 - `exactOptionalPropertyTypes`: オプショナルプロパティの厳密なチェック
 
 #### 2. `eslint.config.mjs`
+
 ESLintルールを強化：
+
 - TypeScript関連のエラー検知
 - React Hooksのルール検証
 - 未使用変数の検知
 - コンソールログの警告
 
 #### 3. `.prettierrc`
+
 コードフォーマットの一貫性を保つ設定
 
 #### 4. `.vscode/settings.json`
+
 VS Code での自動保存時のフォーマットとリント実行
 
 #### 5. `next.config.ts`
+
 - React Strict Modeの有効化
 - TypeScriptビルドエラーでビルドを停止
 
@@ -87,6 +95,7 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 ## VS Code Extensions
 
 以下の拡張機能のインストールを推奨します：
+
 - ESLint
 - Prettier - Code formatter
 - Tailwind CSS IntelliSense
