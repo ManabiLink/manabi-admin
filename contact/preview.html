@@ -1,1 +1,272 @@
 <!-- 回答前の確認画面 -->
+ <!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>回答</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+            background: linear-gradient(to bottom, #ffd4e5 0%, #ffe8f0 100%);
+            min-height: 100vh;
+        }
+
+        .header {
+            background: #ffb3d4;
+            height: 12.5vh;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            padding: 0 30px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .menu-button {
+            width: 40px;
+            height: 40px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 6px;
+            padding: 0;
+        }
+
+        .menu-button span {
+            display: block;
+            width: 30px;
+            height: 3px;
+            background: #333;
+            border-radius: 2px;
+        }
+
+        .main-content {
+            padding: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: calc(100vh - 12.5vh);
+        }
+
+        .content-wrapper {
+            width: 100%;
+            max-width: 800px;
+        }
+
+        .answer-container {
+            background: white;
+            border: 2px solid #333;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .answer-header {
+            background: #f0f0f0;
+            padding: 15px 20px;
+            border-bottom: 2px solid #333;
+            text-align: center;
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .answer-body {
+            padding: 30px;
+        }
+
+        .section {
+            margin-bottom: 30px;
+        }
+
+        .section-label {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .input-box {
+            width: 100%;
+            min-height: 150px;
+            border: 2px solid #333;
+            border-radius: 4px;
+            padding: 15px;
+            font-size: 16px;
+            font-family: inherit;
+            resize: vertical;
+        }
+
+        .input-box:focus {
+            outline: none;
+            border-color: #ffb3d4;
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            padding: 12px 40px;
+            font-size: 16px;
+            border: 2px solid #333;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .btn-back {
+            background: white;
+            color: #333;
+        }
+
+        .btn-back:hover {
+            background: #f5f5f5;
+        }
+
+        .btn-submit {
+            background: #7c7cff;
+            color: white;
+            border-color: #7c7cff;
+        }
+
+        .btn-submit:hover {
+            background: #6b6bef;
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 42.8%;
+            height: 100vh;
+            background: white;
+            box-shadow: -4px 0 20px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+            transform: translateX(100%);
+            z-index: 100;
+            padding: 30px;
+            overflow-y: auto;
+        }
+
+        .sidebar.open {
+            transform: translateX(0);
+        }
+
+        .sidebar-content {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .sidebar-item {
+            padding: 15px 0;
+            border-bottom: 1px solid #eee;
+            font-size: 16px;
+            color: #333;
+            cursor: pointer;
+        }
+
+        .sidebar-item:hover {
+            color: #ffb3d4;
+        }
+
+        .close-button {
+            padding: 15px 30px;
+            background: #333;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        .close-button:hover {
+            background: #555;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.3);
+            display: none;
+            z-index: 50;
+        }
+
+        .overlay.show {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <button class="menu-button" onclick="toggleMenu()">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+    </div>
+
+    <div class="main-content">
+        <div class="content-wrapper">
+            <div class="answer-container">
+                <div class="answer-header">回答</div>
+                <div class="answer-body">
+                    <div class="section">
+                        <div class="section-label">質問</div>
+                        <textarea class="input-box" placeholder="質問内容を入力してください"></textarea>
+                    </div>
+                    
+                    <div class="section">
+                        <div class="section-label">回答</div>
+                        <textarea class="input-box" placeholder="回答内容を入力してください"></textarea>
+                    </div>
+
+                    <div class="button-container">
+                        <button class="btn btn-back" onclick="alert('戻るボタンがクリックされました')">戻る</button>
+                        <button class="btn btn-submit" onclick="location.href='succes.html'">投稿</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
+
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-content">
+            <div class="sidebar-item">投稿</div>
+            <div class="sidebar-item">質問一覧</div>
+            <div class="sidebar-item">よくある質問</div>
+            <div class="sidebar-item">医療関係の方はこちら</div>
+            <button class="close-button" onclick="toggleMenu()">閉じる</button>
+        </div>
+    </div>
+
+    <script>
+        function toggleMenu() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('overlay');
+            
+            sidebar.classList.toggle('open');
+            overlay.classList.toggle('show');
+        }
+    </script>
+</body>
+</html>
