@@ -12,8 +12,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "My Next.js App",
-  description: "This is a sample Next.js project.",
+  title: "Manabi admin",
+  description: "まなびリンクの管理者専用ページです",
 };
 
 export default function RootLayout({ children }) {
@@ -24,11 +24,11 @@ export default function RootLayout({ children }) {
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <header style={{ padding: "1rem", background: "#f5f5f5" }}>
-          <h1>My Next.js App</h1>
+          <h1>Manabi Admin</h1>
         </header>
         <main>{children}</main>
         <footer style={{ padding: "1rem", background: "#f5f5f5", marginTop: "2rem" }}>
-          <p>© 2025 My Website</p>
+          <p>© 2025 ManabiLink Project</p>
         </footer>
       </body>
     </html>
