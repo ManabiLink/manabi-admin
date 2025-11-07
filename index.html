@@ -1,1 +1,120 @@
 <!-- 記事の確認サイト・コミュニケーションページ・いろんなボタンを書く（ページ遷移するやつ）を作るページ -->
+
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ナビゲーション一覧</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        #controls { margin-bottom: 16px; }
+        .btn { display: inline-block; margin:6px; padding:8px 12px; background:#007acc; color:#fff; border-radius:4px; text-decoration:none; }
+        .btn.secondary { background:#555; }
+        #paths { width:100%; height:100px; font-family:monospace; margin-top:8px; }
+        .container { max-width:1000px; }
+        .meta { margin-top:8px; color:#333; font-size:14px; }
+        .path-list { margin-top:12px; display:flex; flex-wrap:wrap; gap:6px; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>すべての階層へ遷移するボタン群</h1>
+
+    <div id="controls">
+        <button id="renderBtn" class="btn">ボタン生成</button>
+        <button id="loadSitemap" class="btn secondary">sitemap.json から読み込む</button>
+        <a id="openRoot" class="btn" href="./">ルートを開く</a>
+
+        <!-- ここに /contact と /article への直接ボタンを追加 -->
+        <a class="btn" href="/contact">/contact を開く</a>
+        <a class="btn" href="/article">/article を開く</a>
+
+        <label style="margin-left:8px;">
+            <input type="checkbox" id="openNewTab"> 新しいタブで開く
+        </label>
+
+        <div>
+            <label>パス一覧（1行に1つ、相対パス／絶対パス可）:</label>
+            <textarea id="paths" placeholder="例：/about/&#10;pages/article.html&#10;posts/2025/"></textarea>
+        </div>
+    </div>
+
+    <div id="buttonsArea" aria-live="polite" class="path-list"></div>
+
+    <hr>
+    <p class="meta">ヒント: workspace の全ディレクトリ一覧を自動で作るには、scripts/generate-sitemap.js で sitemap.json を生成して「sitemap.json から読み込む」を押してください。</p>
+</div>
+
+<script>
+(function(){
+    const sample = [
+        "/", "index.html", "about/", "contact/", "/contact", "/article", "admin/", "dashboard/", "posts/", "posts/2025/", "posts/2024/", "users/", "assets/", "assets/css/", "assets/js/", "docs/", "login.html"
+    ];
+    const pathsEl = document.getElementById('paths');
+    pathsEl.value = sample.join("\n");
+
+    const buttonsArea = document.getElementById('buttonsArea');
+    const newTabCheckbox = document.getElementById('openNewTab');
+
+    // path をエスケープして href に設定（簡易）
+    function normalizeHref(p) {
+        // trim 空文字除去
+        const s = String(p).trim();
+        if (!s) return null;
+        // 先頭が ./ または ../ または / で始まる場合はそのまま、そうでなければ相対パスとして ./ を付与
+        if (/^(\/|\.\.\/|\.\/)/.test(s)) return s;
+        return './' + s;
+    }
+
+    function makeButton(path) {
+        const href = normalizeHref(path);
+        if (!href) return null;
+        const a = document.createElement('a');
+        a.className = 'btn';
+        a.textContent = path;
+        a.href = href;
+        // rel を付けてセキュリティ対策（target が _blank の場合）
+        if (newTabCheckbox.checked) {
+            a.target = '_blank';
+            a.rel = 'noopener noreferrer';
+        } else {
+            a.target = '_self';
+            a.removeAttribute('rel');
+        }
+        return a;
+    }
+
+    function renderFromText() {
+        buttonsArea.innerHTML = '';
+        const lines = pathsEl.value.split(/\r?\n/).map(s => s.trim()).filter(Boolean);
+        lines.forEach(p => {
+            const el = makeButton(p);
+            if (el) buttonsArea.appendChild(el);
+        });
+    }
+
+    document.getElementById('renderBtn').addEventListener('click', renderFromText);
+    newTabCheckbox.addEventListener('change', renderFromText); // オプション変更時に再描画
+
+    // sitemap.json を読み込んでボタン生成（sitemap.json は配列でパスを返す想定）
+    document.getElementById('loadSitemap').addEventListener('click', async () => {
+        try {
+            const res = await fetch('./sitemap.json', {cache: 'no-store'});
+            if (!res.ok) throw new Error('sitemap.json を取得できませんでした');
+            const list = await res.json();
+            if (!Array.isArray(list)) throw new Error('sitemap.json は配列である必要があります');
+            pathsEl.value = list.join("\n");
+            renderFromText();
+        } catch (err) {
+            alert('読み込みエラー: ' + err.message);
+        }
+    });
+
+    // 初回レンダー
+    renderFromText();
+})();
+</script>
+
+</body>
+</html>

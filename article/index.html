@@ -77,6 +77,10 @@
             flex-wrap: wrap;
         }
 
+<<<<<<< HEAD
+=======
+        /* カードはリンク化されるので a.card に対応 */
+>>>>>>> 888c8a3bf4a036dd49d07d69ab51c12b07675450
         .card {
             width: 280px;
             height: 350px;
@@ -90,6 +94,10 @@
             justify-content: center;
             font-size: 18px;
             color: #666;
+<<<<<<< HEAD
+=======
+            text-decoration: none; /* リンクの下線を消す */
+>>>>>>> 888c8a3bf4a036dd49d07d69ab51c12b07675450
         }
 
         .card:hover {
@@ -122,12 +130,21 @@
             gap: 30px;
         }
 
+<<<<<<< HEAD
+=======
+        /* サイドバー項目をリンク化 */
+>>>>>>> 888c8a3bf4a036dd49d07d69ab51c12b07675450
         .sidebar-item {
             padding: 15px 0;
             border-bottom: 1px solid #eee;
             font-size: 16px;
             color: #333;
             cursor: pointer;
+<<<<<<< HEAD
+=======
+            text-decoration: none;
+            display: block;
+>>>>>>> 888c8a3bf4a036dd49d07d69ab51c12b07675450
         }
 
         .sidebar-item:hover {
@@ -178,6 +195,7 @@
         <div class="content-wrapper">
             <h1 class="page-title">まなびリンクプロジェクト</h1>
             <div class="card-container">
+<<<<<<< HEAD
                 <div class="card" onclick="alert('左のカードがクリックされました')">
                     <p>記事の投稿</p>
                 </div>
@@ -187,6 +205,18 @@
                 <div class="card" onclick="alert('右のカードがクリックされました')">
                     <p>医療関係者用品</p>
                 </div>
+=======
+                <!-- カードをリンクに変更：必要に応じて href を実際の遷移先に合わせて編集してください -->
+                <a class="card" href="./post.html">
+                    <p>記事の投稿</p>
+                </a>
+                <a class="card" href="../questions/">
+                    <p>新着の質問</p>
+                </a>
+                <a class="card" href="../medical/">
+                    <p>医療関係者用品</p>
+                </a>
+>>>>>>> 888c8a3bf4a036dd49d07d69ab51c12b07675450
             </div>
         </div>
     </div>
@@ -195,10 +225,18 @@
 
     <div class="sidebar" id="sidebar">
         <div class="sidebar-content">
+<<<<<<< HEAD
             <div class="sidebar-item">投稿</div>
             <div class="sidebar-item">質問一覧</div>
             <div class="sidebar-item">よくある質問</div>
             <div class="sidebar-item">医療関係の方はこちら</div>
+=======
+            <!-- サイドバーもリンク化 -->
+            <a class="sidebar-item" href="./post.html">投稿</a>
+            <a class="sidebar-item" href="../questions/">質問一覧</a>
+            <a class="sidebar-item" href="./faq.html">よくある質問</a>
+            <a class="sidebar-item" href="../medical/">医療関係の方はこちら</a>
+>>>>>>> 888c8a3bf4a036dd49d07d69ab51c12b07675450
             <button class="close-button" onclick="toggleMenu()">閉じる</button>
         </div>
     </div>
