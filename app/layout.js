@@ -22,12 +22,12 @@ export default function RootLayout({ children }) {
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </head>
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <header style={{ padding: "1rem", background: "#f5f5f5" }}>
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased bg-black text-white`}>
+        <header style={{ padding: "1rem", background: "#1a1a1a" }}>
           <h1>Manabi Admin</h1>
         </header>
         <main>{children}</main>
-        <footer style={{ padding: "1rem", background: "#f5f5f5", marginTop: "2rem" }}>
+        <footer style={{ padding: "1rem", background: "#1a1a1a", marginTop: "2rem" }}>
           <p>© 2025 ManabiLink Project</p>
         </footer>
       </body>
