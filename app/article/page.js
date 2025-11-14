@@ -22,16 +22,16 @@ const handleReview = (id, status) => {
 
 return (
     <div className="min-h-screen bg-gray-100 p-8">
-    <h1 className="text-2xl font-bold mb-6">記事審査管理画面</h1>
+    <h1 className="text-2xl font-bold mb-6 text-black">記事審査管理画面</h1>
     
     <div className="space-y-4">
         {articles.map(article => (
         <div key={article.id} className="bg-white p-6 rounded-lg shadow-md">
             <div className="flex justify-between items-start">
             <div>
-                <h2 className="text-xl font-semibold">{article.title}</h2>
-                <p className="text-gray-600 mt-2">{article.content}</p>
-                <div className="mt-2 text-sm text-gray-500">
+                <h2 className="text-xl font-semibold text-black">{article.title}</h2>
+                <p className="text-black mt-2">{article.content}</p>
+                <div className="mt-2 text-sm text-black">
                 <p>投稿者: {article.author}</p>
                 <p>投稿日: {article.submittedAt}</p>
                 </div>

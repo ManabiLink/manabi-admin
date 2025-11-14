@@ -11,7 +11,7 @@ export default function QuestionAnswerPage() {
       submittedAt: "2025-11-07",
       answer: ""
     },
-    // もっと追加可能
+    
   ]);
 
   const handleAnswerChange = (id, newAnswer) => {
