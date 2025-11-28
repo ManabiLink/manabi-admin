@@ -1,7 +1,8 @@
-'use client';
+"use client";
 
 import { useEffect, useState } from "react";
 import dayjs from "dayjs";
+import supabase from "@/lib/supabaseClient";
 
 export default function MedRecordCalendar({ userId = "testUser" }) {
   const [currentMonth, setCurrentMonth] = useState(dayjs());
@@ -12,25 +13,33 @@ export default function MedRecordCalendar({ userId = "testUser" }) {
   const daysInMonth = currentMonth.daysInMonth();
   const firstDay = currentMonth.startOf("month").day();
 
-  // ---- Firestore からデータ読み込み ----
+  // ---- Supabase からデータ読み込み ----
   useEffect(() => {
     const loadMonth = async () => {
+      const startDate = currentMonth.startOf("month").format("YYYY-MM-DD");
+      const endDate = currentMonth.endOf("month").format("YYYY-MM-DD");
+
+      const { data, error } = await supabase
+        .from("medRecords")
+        .select("*")
+        .eq("user_id", userId)
+        .gte("date", startDate)
+        .lte("date", endDate);
+
       const newRecords = {};
-
-      for (let i = 1; i <= daysInMonth; i++) {
-        const date = currentMonth.date(i).format("YYYY-MM-DD");
-        const ref = doc(db, "users", userId, "medRecords", date);
-        const snap = await getDoc(ref);
-
-        if (snap.exists()) {
-          newRecords[date] = snap.data();
-        }
+      if (error) {
+        console.error("Supabase load error:", error);
+      } else if (data) {
+        data.forEach((row) => {
+          newRecords[row.date] = { medicine: row.medicine, dosage: row.dosage, memo: row.memo };
+        });
       }
+
       setMedRecords(newRecords);
     };
 
     loadMonth();
-  }, [currentMonth]);
+  }, [currentMonth, userId]);
 
   const handleOpenModal = (date) => {
     setSelectedDate(date);
@@ -38,16 +47,29 @@ export default function MedRecordCalendar({ userId = "testUser" }) {
     setForm(medRecords[key] || { medicine: "", dosage: "", memo: "" });
   };
 
-  // ---- Firestore に保存 ----
+  // ---- Supabase に保存（upsert） ----
   const handleSave = async () => {
+    if (!selectedDate) return;
     const key = selectedDate.format("YYYY-MM-DD");
-    const ref = doc(db, "users", userId, "medRecords", key);
 
-    await setDoc(ref, form, { merge: true });
+    const payload = {
+      user_id: userId,
+      date: key,
+      medicine: form.medicine,
+      dosage: form.dosage,
+      memo: form.memo,
+    };
+
+    const { error } = await supabase.from("medRecords").upsert(payload, { onConflict: ["user_id", "date"] });
+
+    if (error) {
+      console.error("Supabase save error:", error);
+      return;
+    }
 
     setMedRecords({
       ...medRecords,
-      [key]: form
+      [key]: { medicine: form.medicine, dosage: form.dosage, memo: form.memo },
     });
 
     setSelectedDate(null);
