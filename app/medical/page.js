@@ -2,8 +2,6 @@
 
 import { useEffect, useState } from "react";
 import dayjs from "dayjs";
-import { db } from "@/lib/firebase";
-import { doc, setDoc, getDoc } from "firebase/firestore";
 
 export default function MedRecordCalendar({ userId = "testUser" }) {
   const [currentMonth, setCurrentMonth] = useState(dayjs());
