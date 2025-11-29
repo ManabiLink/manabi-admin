@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import dayjs from "dayjs";
-import supabase from "../../lib/supabaseClient";
+import supabase from "@/lib/supabaseClient";
 
 export default function MedRecordCalendar({ userId = "testUser" }) {
   const [currentMonth, setCurrentMonth] = useState(dayjs());
