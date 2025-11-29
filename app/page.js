@@ -7,7 +7,7 @@ export default function Home() {
       {/* 問い合わせボタンを追加 */}
       <div className="absolute top-4 right-4">
         <Link 
-          href="/contact" 
+          href="/feedback" 
           className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors"
         >
           お問い合わせ
