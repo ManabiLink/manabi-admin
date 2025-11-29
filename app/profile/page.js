@@ -78,7 +78,23 @@ export default function ProfilePage() {
       const { error } = await supabase.from("profiles").upsert(payload, { returning: "minimal" });
       if (error) throw error;
 
-      setMessage("プロフィールを保存しました。");
+      // プロフィール保存は成功 -> 認証ユーザーの表示名も同期する
+      let authUpdateError = null;
+      try {
+        // Supabase Auth v2: updateUser にメタデータを渡す
+        const { error: updateErr } = await supabase.auth.updateUser({ data: { display_name: profile.display_name } });
+        if (updateErr) authUpdateError = updateErr;
+      } catch (e) {
+        authUpdateError = e;
+      }
+
+      if (authUpdateError) {
+        // プロフィールは保存済みだが、表示名同期だけ失敗した場合はユーザーに伝える
+        setMessage("プロフィールを保存しました（表示名の同期に失敗しました）。");
+        console.error("display_name sync failed:", authUpdateError);
+      } else {
+        setMessage("プロフィールを保存しました。");
+      }
     } catch (err) {
       console.error(err);
       setError(err.message || String(err));
