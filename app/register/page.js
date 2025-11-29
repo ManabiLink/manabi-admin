@@ -158,9 +158,17 @@ export default function ExpertRequestPage() {
 						>
 							{loading ? "送信中…" : "リクエストを送信する"}
 						</button>
-						<Link href="/" className="text-sm text-blue-600 hover:underline">
-							ホームへ戻る
-						</Link>
+						<div className="flex items-center gap-3">
+							<Link href="/" className="text-sm text-blue-600 hover:underline">
+								ホームへ戻る
+							</Link>
+							<Link
+								href="/login"
+								className="px-3 py-2 border rounded-md text-sm bg-gray-50 hover:bg-gray-100"
+							>
+								ログイン画面へ
+							</Link>
+						</div>
 					</div>
 				</form>
 			</div>

@@ -100,14 +100,19 @@ export default function LoginPage() {
             >
               {loading ? "ログイン中…" : "ログイン"}
             </button>
-            <div className="text-sm">
-              <Link href="/register" className="text-blue-600 hover:underline">
-                新規登録
-              </Link>
-              {" / "}
-              <Link href="/contact" className="text-blue-600 hover:underline">
-                パスワード再発行
-              </Link>
+            <div className="flex items-center gap-3">
+              <button
+                type="button"
+                onClick={() => router.push('/register')}
+                className="px-3 py-2 border rounded-md text-sm bg-gray-50 hover:bg-gray-100"
+              >
+                新規登録へ
+              </button>
+              {/* <div className="text-sm">
+                <Link href="/contact" className="text-blue-600 hover:underline">
+                  パスワード再発行
+                </Link>
+              </div> */}
             </div>
           </div>
         </form>
