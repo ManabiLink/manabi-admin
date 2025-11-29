@@ -47,7 +47,7 @@ const OpinionPage = () => {
 
         {/* 記入するボタン（青い長方形 ＋ 白文字） */}
         <button
-          onClick={() => router.push("/toDev/form")}
+          onClick={() => router.push("/feedback/form")}
           style={{
             background: "#4A79FF",
             color: "white",

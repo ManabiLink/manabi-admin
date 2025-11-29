@@ -251,7 +251,7 @@ export default function DevFormPage() {
                 </p>
 
                 <button
-                  onClick={() => router.push("/toDev")}
+                  onClick={() => router.push("/feedback")}
                   style={{
                     position: "absolute",
                     right: "20px",
