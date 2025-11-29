@@ -1,36 +1,112 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# manabi-admin（日本語補足）
 
-## Getting Started
+このファイルは `README.md` の補足として、ローカルでの起動方法や `server.js` の使い方、Supabase の導入手順を日本語でまとめたものです。
 
-First, run the development server:
+---
+
+## 1) ローカルでの基本手順
+
+1. 依存関係をインストール
+
+```bash
+npm install
+```
+
+2. 開発サーバーを起動
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+3. ブラウザで開く
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```
+http://localhost:3000
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+## 2) `server.js` の使い方
 
-To learn more about Next.js, take a look at the following resources:
+- リポジトリルートに `server.js` がある場合、カスタムサーバーとして使われることがあります。基本的な起動は:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+node server.js
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- `server.js` の中でポートやオプションを参照していることがあるため、必要に応じて中身を確認してください。
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 3) Supabase の依存追加と設定
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Supabase を使う場合はクライアントライブラリを追加します。
+
+```bash
+npm install @supabase/supabase-js
+```
+
+### 環境変数の設定
+
+`.env.local` に次を追加してください（値は Supabase のダッシュボードで取得）。
+
+```
+NEXT_PUBLIC_SUPABASE_URL=https://your-project-id.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
+```
+
+### クライアント初期化例 (`lib/supabaseClient.js`)
+
+```javascript
+import { createClient } from '@supabase/supabase-js';
+
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+const supabase = createClient(supabaseUrl, supabaseAnonKey);
+
+export default supabase;
+```
+
+アプリ内では `import supabase from '@/lib/supabaseClient'` のように利用します。
+
+---
+
+## 4) Supabase Auth の利用に関する注意
+
+- クライアント側でログインやユーザー取得を行う際は `supabase.auth` を使用します。
+- サービスロールキーや管理者権限が必要な処理はサーバー側（API route）で実行してください。
+
+---
+
+## 5) よく使うコマンド
+
+- 依存インストール: `npm install`
+- 開発サーバー: `npm run dev`
+- ビルド: `npm run build`
+- 本番開始: `npm start`（`package.json` に依存）
+
+---
+
+## 6) テーブル例（参考）
+
+今回の `expert_requests` テーブルの例:
+
+```sql
+create table expert_requests (
+  id bigint generated always as identity primary key,
+  name text not null,
+  affiliation text,
+  email text not null,
+  message text,
+  status text default 'pending',
+  created_at timestamp default now()
+);
+```
+
+---
+
+## 7) 追加サポート
+
+- `server.js` の中身を共有いただければ、README 本体に具体例を追記します。
+- Supabase の RLS、承認フロー、通知（メール/Discord）などの運用フロー実装も支援できます。
