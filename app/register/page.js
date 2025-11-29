@@ -1,79 +1,82 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 import supabase from "@/lib/supabaseClient";
 
-export default function RegisterPage() {
-	const router = useRouter();
+export default function ExpertRequestPage() {
 	const [name, setName] = useState("");
+	const [affiliation, setAffiliation] = useState("");
 	const [email, setEmail] = useState("");
-	const [password, setPassword] = useState("");
-	const [confirmPassword, setConfirmPassword] = useState("");
-	const [showPassword, setShowPassword] = useState(false);
-	const [showConfirm, setShowConfirm] = useState(false);
+	const [message, setMessage] = useState("");
 	const [loading, setLoading] = useState(false);
-	const [message, setMessage] = useState(null);
 	const [error, setError] = useState(null);
-	
-	// パスワード要件チェック: 大文字・小文字・数字・記号を各1文字以上含むこと
-	const passwordRequirements = (pwd) => {
-		const checks = {
-			hasLower: /[a-z]/.test(pwd),
-			hasUpper: /[A-Z]/.test(pwd),
-			hasDigit: /\d/.test(pwd),
-			hasSymbol: /[!@#$%^&*()\-_=+\[\]{};:'",.<>/?\\|`~]/.test(pwd),
-			minLength: pwd.length >= 6,
-		};
-		return checks;
-	};
+	const [notice, setNotice] = useState(null);
+	const [submitted, setSubmitted] = useState(false);
+	const [submittedMessage, setSubmittedMessage] = useState("");
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 		setError(null);
-		setMessage(null);
+		setNotice(null);
 
-		if (!email) {
-			setError("メールアドレスを入力してください。");
-			return;
-		}
-		if (!name) {
+		if (!name.trim()) {
 			setError("名前を入力してください。");
 			return;
 		}
-		const checks = passwordRequirements(password);
-		const missing = [];
-		if (!checks.minLength) missing.push("6文字以上");
-		if (!checks.hasUpper) missing.push("大文字");
-		if (!checks.hasLower) missing.push("小文字");
-		if (!checks.hasDigit) missing.push("数字");
-		if (!checks.hasSymbol) missing.push("記号");
-		if (missing.length) {
-			setError(
-				`パスワードは次を満たす必要があります: ${missing.join("、")}。`
-			);
+		if (!email.trim()) {
+			setError("メールアドレスを入力してください。");
 			return;
 		}
-		if (password !== confirmPassword) {
-			setError("パスワードが一致していません。");
+		if (!message.trim()) {
+			setError("メッセージを入力してください。");
 			return;
 		}
 
 		setLoading(true);
 		try {
-			const { error: supaError } = await supabase.auth.signUp(
-				{ email, password },
-				{ data: { full_name: name } }
-			);
+			const payload = {
+				name: name.trim(),
+				affiliation: affiliation.trim() || null,
+				email: email.trim(),
+				message: message.trim(),
+			};
+
+			// 既に同じメールでリクエストが存在するか確認
+			const { data: existing, error: fetchError } = await supabase
+				.from("expert_requests")
+				.select("id,status,created_at")
+				.eq("email", payload.email)
+				.maybeSingle();
+
+			if (fetchError) {
+				setError(fetchError.message || "既存チェックに失敗しました。");
+				setLoading(false);
+				return;
+			}
+
+			if (existing) {
+				// 既にリクエスト済みの場合はフォームを隠して案内を表示
+				setSubmittedMessage("このメールアドレスですでにリクエストが送信されています。確認のため少々お待ちください。");
+				setSubmitted(true);
+				setLoading(false);
+				return;
+			}
+
+			const { error: supaError } = await supabase
+				.from("expert_requests")
+				.insert([payload]);
 
 			if (supaError) {
-				setError(supaError.message || "登録に失敗しました。");
+				setError(supaError.message || "送信に失敗しました。");
 			} else {
-				setMessage(
-					"登録メールを送信しました。メールのリンクで確認してください。ログイン画面へ移動します。"
-				);
-				setTimeout(() => router.push("/login"), 1800);
+				// 成功時はサンクス画面を表示（検証に時間がかかる旨を案内）
+				setSubmittedMessage("ご登録ありがとうございます。本人確認のため１週間ほどお時間を頂戴いたします。");
+				setSubmitted(true);
+				setName("");
+				setAffiliation("");
+				setEmail("");
+				setMessage("");
 			}
 		} catch (err) {
 			setError(err.message || "予期せぬエラーが発生しました。");
@@ -82,14 +85,28 @@ export default function RegisterPage() {
 		}
 	};
 
+	if (submitted) {
+		return (
+			<div className="min-h-screen flex items-center justify-center bg-zinc-50 font-sans p-8">
+				<div className="w-full max-w-md border-2 border-black rounded-md bg-white p-6">
+					<h1 className="text-2xl font-semibold mb-4">送信完了</h1>
+					<p className="text-sm text-gray-700 mb-4">{submittedMessage}</p>
+					<div className="flex justify-end">
+						<Link href="/" className="text-sm text-blue-600 hover:underline">ホームへ戻る</Link>
+					</div>
+				</div>
+			</div>
+		);
+	}
+
 	return (
 		<div className="min-h-screen flex items-center justify-center bg-zinc-50 font-sans p-8">
 			<div className="w-full max-w-md border-2 border-black rounded-md bg-white p-6">
-				<h1 className="text-2xl font-semibold mb-4">新規登録</h1>
+				<h1 className="text-2xl font-semibold mb-4">専門家リクエスト</h1>
 
 				<form onSubmit={handleSubmit} className="space-y-4">
 					<div>
-						<label className="block text-sm font-medium mb-1">お名前（任意）</label>
+						<label className="block text-sm font-medium mb-1">お名前</label>
 						<input
 							value={name}
 							onChange={(e) => setName(e.target.value)}
@@ -97,8 +114,18 @@ export default function RegisterPage() {
 							placeholder="例：山田 太郎"
 						/>
 					</div>
-                    
-                    <div>
+
+					<div>
+						<label className="block text-sm font-medium mb-1">所属（任意）</label>
+						<input
+							value={affiliation}
+							onChange={(e) => setAffiliation(e.target.value)}
+							className="w-full px-3 py-2 border rounded-md focus:outline-none"
+							placeholder="例：○○大学 / △△研究所"
+						/>
+					</div>
+
+					<div>
 						<label className="block text-sm font-medium mb-1">メールアドレス</label>
 						<input
 							type="email"
@@ -110,52 +137,18 @@ export default function RegisterPage() {
 					</div>
 
 					<div>
-						<label className="block text-sm font-medium mb-1">パスワード（再）</label>
-						<div className="flex items-center gap-2">
-							<input
-								type={showConfirm ? "text" : "password"}
-								value={confirmPassword}
-								onChange={(e) => setConfirmPassword(e.target.value)}
-								className="flex-1 px-3 py-2 border rounded-md focus:outline-none"
-								placeholder="パスワード（確認）"
-							/>
-							<button
-								type="button"
-								onClick={() => setShowConfirm((s) => !s)}
-								className="px-3 py-2 border rounded-md text-sm bg-gray-100 hover:bg-gray-200"
-								aria-label={showConfirm ? "確認用パスワードを非表示" : "確認用パスワードを表示"}
-							>
-								{showConfirm ? "非表示" : "表示"}
-							</button>
-						</div>
-					</div>
-
-					<div>
-						<label className="block text-sm font-medium mb-1">パスワード</label>
-						<div className="text-xs text-gray-600 mb-2">
-							※パスワードは6文字以上で、英大文字・英小文字・数字・記号をそれぞれ1文字以上含めてください。
-						</div>
-						<div className="flex items-center gap-2">
-							<input
-								type={showPassword ? "text" : "password"}
-								value={password}
-								onChange={(e) => setPassword(e.target.value)}
-								className="flex-1 px-3 py-2 border rounded-md focus:outline-none"
-								placeholder="6文字以上のパスワード"
-							/>
-							<button
-								type="button"
-								onClick={() => setShowPassword((s) => !s)}
-								className="px-3 py-2 border rounded-md text-sm bg-gray-100 hover:bg-gray-200"
-								aria-label={showPassword ? "パスワードを非表示" : "パスワードを表示"}
-							>
-								{showPassword ? "非表示" : "表示"}
-							</button>
-						</div>
+						<label className="block text-sm font-medium mb-1">メッセージ</label>
+						<textarea
+							value={message}
+							onChange={(e) => setMessage(e.target.value)}
+							className="w-full px-3 py-2 border rounded-md focus:outline-none"
+							placeholder="ご希望の内容や自己紹介などを入力してください。"
+							rows={5}
+						/>
 					</div>
 
 					{error && <div className="text-red-600 text-sm">{error}</div>}
-					{message && <div className="text-green-600 text-sm">{message}</div>}
+					{notice && <div className="text-green-600 text-sm">{notice}</div>}
 
 					<div className="flex items-center justify-between">
 						<button
@@ -163,10 +156,10 @@ export default function RegisterPage() {
 							className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors"
 							disabled={loading}
 						>
-							{loading ? "登録中…" : "登録する"}
+							{loading ? "送信中…" : "リクエストを送信する"}
 						</button>
-						<Link href="/login" className="text-sm text-blue-600 hover:underline">
-							ログインはこちら
+						<Link href="/" className="text-sm text-blue-600 hover:underline">
+							ホームへ戻る
 						</Link>
 					</div>
 				</form>
