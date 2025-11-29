@@ -12,6 +12,8 @@ export default function ExpertRequestPage() {
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState(null);
 	const [notice, setNotice] = useState(null);
+	const [submitted, setSubmitted] = useState(false);
+	const [submittedMessage, setSubmittedMessage] = useState("");
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
@@ -40,14 +42,37 @@ export default function ExpertRequestPage() {
 				message: message.trim(),
 			};
 
-			const { data, error: supaError } = await supabase
+			// 既に同じメールでリクエストが存在するか確認
+			const { data: existing, error: fetchError } = await supabase
+				.from("expert_requests")
+				.select("id,status,created_at")
+				.eq("email", payload.email)
+				.maybeSingle();
+
+			if (fetchError) {
+				setError(fetchError.message || "既存チェックに失敗しました。");
+				setLoading(false);
+				return;
+			}
+
+			if (existing) {
+				// 既にリクエスト済みの場合はフォームを隠して案内を表示
+				setSubmittedMessage("このメールアドレスですでにリクエストが送信されています。確認のため少々お待ちください。");
+				setSubmitted(true);
+				setLoading(false);
+				return;
+			}
+
+			const { error: supaError } = await supabase
 				.from("expert_requests")
 				.insert([payload]);
 
 			if (supaError) {
 				setError(supaError.message || "送信に失敗しました。");
 			} else {
-				setNotice("リクエストを送信しました。ありがとうございます。");
+				// 成功時はサンクス画面を表示（検証に時間がかかる旨を案内）
+				setSubmittedMessage("ご登録ありがとうございます。本人確認のため１週間ほどお時間を頂戴いたします。");
+				setSubmitted(true);
 				setName("");
 				setAffiliation("");
 				setEmail("");
@@ -59,6 +84,20 @@ export default function ExpertRequestPage() {
 			setLoading(false);
 		}
 	};
+
+	if (submitted) {
+		return (
+			<div className="min-h-screen flex items-center justify-center bg-zinc-50 font-sans p-8">
+				<div className="w-full max-w-md border-2 border-black rounded-md bg-white p-6">
+					<h1 className="text-2xl font-semibold mb-4">送信完了</h1>
+					<p className="text-sm text-gray-700 mb-4">{submittedMessage}</p>
+					<div className="flex justify-end">
+						<Link href="/" className="text-sm text-blue-600 hover:underline">ホームへ戻る</Link>
+					</div>
+				</div>
+			</div>
+		);
+	}
 
 	return (
 		<div className="min-h-screen flex items-center justify-center bg-zinc-50 font-sans p-8">
