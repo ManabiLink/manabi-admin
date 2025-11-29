@@ -150,24 +150,30 @@ export default function ExpertRequestPage() {
 					{error && <div className="text-red-600 text-sm">{error}</div>}
 					{notice && <div className="text-green-600 text-sm">{notice}</div>}
 
-					<div className="flex items-center justify-between">
+					<div className="grid grid-cols-1 md:grid-cols-3 gap-3 items-center">
 						<button
 							type="submit"
-							className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors"
+							className="w-full px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors"
 							disabled={loading}
 						>
 							{loading ? "送信中…" : "リクエストを送信する"}
 						</button>
-						<div className="flex items-center gap-3">
-							<Link href="/" className="text-sm text-blue-600 hover:underline">
-								ホームへ戻る
-							</Link>
-							<Link
-								href="/login"
-								className="px-3 py-2 border rounded-md text-sm bg-gray-50 hover:bg-gray-100"
-							>
-								ログイン画面へ
-							</Link>
+
+						<div className="md:col-span-2 flex justify-between">
+							<div className="flex justify-center md:justify-center">
+								<Link href="/" className="px-3 py-2 text-sm text-blue-600 hover:underline border rounded-md bg-white hover:bg-gray-50">
+									ホームへ戻る
+								</Link>
+							</div>
+
+							<div className="flex justify-end md:justify-end">
+								<Link
+									href="/login"
+									className="px-3 py-2 border rounded-md text-sm bg-gray-50 hover:bg-gray-100"
+								>
+									ログイン画面へ
+								</Link>
+							</div>
 						</div>
 					</div>
 				</form>
