@@ -17,7 +17,7 @@ export default function ArticleNew() {
 
   // 投稿処理フロー（モーダル内）
   const [isPostingPhase, setIsPostingPhase] = useState(false); // true -> 成功メッセージ表示＆カウント開始
-  const [countdown, setCountdown] = useState(5); // 秒
+  const [countdown, setCountdown] = useState(); // 秒
 
   // ❌ useRef<number | null> は JS ではエラーになる → 修正
   const countdownRef = useRef(null);
