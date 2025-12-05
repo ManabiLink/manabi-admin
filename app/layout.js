@@ -1,5 +1,6 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import AuthGuard from './components/AuthGuard';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -26,7 +27,11 @@ export default function RootLayout({ children }) {
         <header style={{ padding: "1rem", background: "#1a1a1a" }}>
           <h1 className="text-white">Manabi Admin</h1>
         </header>
-        <main>{children}</main>
+        <main>
+          <AuthGuard>
+            {children}
+          </AuthGuard>
+        </main>
         <footer style={{ padding: "1rem", background: "#1a1a1a", marginTop: "2rem" }}>
           <p className="text-white text-center">© 2025 ManabiLink Project</p>
         </footer>
