@@ -20,14 +20,24 @@ export default function Home() {
             <h2>最近の投稿</h2>
             <p>ここに最近の投稿が表示されます。</p>
           </div>
-          <ProtectedLink
-            href="/article"
-            className="inline-block px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors text-center"
-          >
-            記事一覧へ
-          </ProtectedLink>
+
+          <div className="flex flex-col gap-2">
+            <ProtectedLink
+              href="/post"
+              className="inline-block px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors text-center"
+            >
+              記事投稿画面へ
+            </ProtectedLink>
+          
+            <ProtectedLink
+              href="/post"
+              className="inline-block px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors text-center"
+            >
+              申請記事一覧へ
+            </ProtectedLink>
+          </div>
         </div>
-        
+
         <div className="flex-1 h-[60vh] min-h-[40vh] border-2 border-black rounded-md p-4 flex flex-col justify-between">
           <div>
             <h2>新着の質問</h2>
