@@ -1,5 +1,6 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import Header from './components/Header';
 import AuthGuard from './components/AuthGuard';
 
 const geistSans = Geist({
@@ -24,9 +25,7 @@ export default function RootLayout({ children }) {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased bg-black text-white`}>
-        <header style={{ padding: "1rem", background: "#1a1a1a" }}>
-          <h1 className="text-white">Manabi Admin</h1>
-        </header>
+        <Header />
         <main>
           <AuthGuard>
             {children}
