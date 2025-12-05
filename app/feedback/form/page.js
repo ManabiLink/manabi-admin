@@ -91,7 +91,7 @@ export default function DevFormPage() {
           boxShadow: "0 4px 14px rgba(0,0,0,0.15)"
         }}
       >
-        <h1 style={{ textAlign: "center", marginBottom: "30px" }}>
+        <h1 style={{ textAlign: "center", marginBottom: "30px", color: "#000" }}>
           意見・質問フォーム
         </h1>
 
@@ -137,7 +137,8 @@ export default function DevFormPage() {
               display: "flex",
               alignItems: "center",
               gap: "8px",
-              marginBottom: "8px"
+              marginBottom: "8px",
+              color: "#000"
             }}
           >
             内容
@@ -166,7 +167,8 @@ export default function DevFormPage() {
               fontSize: "16px",
               border: errors.content ? "2px solid red" : "1px solid #ccc",
               borderRadius: "6px",
-              resize: "vertical"
+              resize: "vertical",
+              color: "#000"
             }}
           />
 
@@ -233,7 +235,8 @@ export default function DevFormPage() {
                   style={{
                     marginBottom: "20px",
                     fontSize: "22px",
-                    textAlign: "center"
+                    textAlign: "center",
+                    color: "#000"
                   }}
                 >
                   送信が完了しました。
@@ -244,7 +247,8 @@ export default function DevFormPage() {
                     fontSize: "16px",
                     textAlign: "center",
                     lineHeight: "1.8",
-                    whiteSpace: "pre-wrap"
+                    whiteSpace: "pre-wrap",
+                    color: "#000"
                   }}
                 >
                   {`数日以内にご返信いたしますので、\nしばらくお待ちください。`}
@@ -274,7 +278,8 @@ export default function DevFormPage() {
                   style={{
                     marginBottom: "20px",
                     fontSize: "22px",
-                    textAlign: "center"
+                    textAlign: "center",
+                    color: "#000"
                   }}
                 >
                   こちらの内容でよろしいですか
@@ -302,7 +307,8 @@ export default function DevFormPage() {
                       border: "2px solid #666",
                       borderRadius: "6px",
                       cursor: "pointer",
-                      fontSize: "16px"
+                      fontSize: "16px",
+                      color: "#000"
                     }}
                   >
                     修正
@@ -343,7 +349,8 @@ function FormInput({ label, value, setValue, type, required, error }) {
           display: "flex",
           alignItems: "center",
           gap: "8px",
-          marginBottom: "8px"
+          marginBottom: "8px",
+          color: "#000"
         }}
       >
         {label}
@@ -372,7 +379,8 @@ function FormInput({ label, value, setValue, type, required, error }) {
           padding: "10px 12px",
           fontSize: "16px",
           border: error ? "2px solid red" : "1px solid #ccc",
-          borderRadius: "6px"
+          borderRadius: "6px",
+          color: "#000"
         }}
       />
 
@@ -393,7 +401,8 @@ function ConfirmItem({ label, value, isTextArea }) {
         style={{
           fontWeight: "bold",
           fontSize: "16px",
-          marginBottom: "4px"
+          marginBottom: "4px",
+          color: "#000"
         }}
       >
         {label}
@@ -406,7 +415,8 @@ function ConfirmItem({ label, value, isTextArea }) {
           border: "1px solid #aaa",
           borderRadius: "6px",
           background: "#f9f9f9",
-          whiteSpace: "pre-wrap"
+          whiteSpace: "pre-wrap",
+          color: "#000"
         }}
       >
         {value || "（未入力）"}
