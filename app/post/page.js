@@ -28,9 +28,9 @@ export default function ArticleNew() {
   // バリデーション
   const isFormValid = title.trim().length > 0 && content.trim().length > 0;
 
-  // Cancel ボタン: /app に遷移
+  // Cancel ボタン: / に遷移
   const handleCancel = () => {
-    router.push("/app"); // ← リダイレクト先指定
+    router.push("/"); // ← リダイレクト先指定
   };
 
   // 確認ボタン
@@ -76,8 +76,8 @@ export default function ArticleNew() {
       if (remainingMs <= 0) {
         clearCountdown();
 
-        // ここでリダイレクト（/app 固定）
-        router.push("/app"); // ←★★ リダイレクト先を /app に指定 ★★
+        // ここでリダイレクト（/ 固定）
+        router.push("/"); // ←★★ リダイレクト先を / に指定 ★★
       }
     }, tickMs);
 
@@ -200,7 +200,7 @@ export default function ArticleNew() {
                 </div>
               </div>
             ) : (
-              // 投稿完了 → カウントダウン → /app リダイレクト
+              // 投稿完了 → カウントダウン → / リダイレクト
               <div className="flex flex-col gap-4">
                 <div className="text-center">
                   <h2 className="text-xl font-semibold">ありがとうございます。</h2>

@@ -42,7 +42,6 @@ export default function ExpertRequestPage() {
 				message: message.trim(),
 			};
 
-			// 既に同じメールでリクエストが存在するか確認
 			const { data: existing, error: fetchError } = await supabase
 				.from("expert_requests")
 				.select("id,status,created_at")
@@ -56,7 +55,6 @@ export default function ExpertRequestPage() {
 			}
 
 			if (existing) {
-				// 既にリクエスト済みの場合はフォームを隠して案内を表示
 				setSubmittedMessage("このメールアドレスですでにリクエストが送信されています。確認のため少々お待ちください。");
 				setSubmitted(true);
 				setLoading(false);
@@ -70,7 +68,6 @@ export default function ExpertRequestPage() {
 			if (supaError) {
 				setError(supaError.message || "送信に失敗しました。");
 			} else {
-				// 成功時はサンクス画面を表示（検証に時間がかかる旨を案内）
 				setSubmittedMessage("ご登録ありがとうございます。本人確認のため１週間ほどお時間を頂戴いたします。");
 				setSubmitted(true);
 				setName("");
@@ -87,12 +84,12 @@ export default function ExpertRequestPage() {
 
 	if (submitted) {
 		return (
-			<div className="min-h-screen flex items-center justify-center bg-zinc-50 font-sans p-8">
-				<div className="w-full max-w-md border-2 border-black rounded-md bg-white p-6">
-					<h1 className="text-2xl font-semibold mb-4">送信完了</h1>
-					<p className="text-sm text-gray-700 mb-4">{submittedMessage}</p>
+			<div className="min-h-screen flex items-center justify-center bg-zinc-50 font-sans p-8 text-black">
+				<div className="w-full max-w-md border-2 border-gray-300 rounded-md bg-white p-6 text-black">
+					<h1 className="text-2xl font-semibold mb-4 text-black">送信完了</h1>
+					<p className="text-sm text-black mb-4">{submittedMessage}</p>
 					<div className="flex justify-end">
-						<Link href="/" className="text-sm text-blue-600 hover:underline">ホームへ戻る</Link>
+						<Link href="/" className="text-sm text-black hover:underline">ホームへ戻る</Link>
 					</div>
 				</div>
 			</div>
@@ -100,48 +97,48 @@ export default function ExpertRequestPage() {
 	}
 
 	return (
-		<div className="min-h-screen flex items-center justify-center bg-zinc-50 font-sans p-8">
-			<div className="w-full max-w-md border-2 border-black rounded-md bg-white p-6">
-				<h1 className="text-2xl font-semibold mb-4">専門家リクエスト</h1>
+		<div className="min-h-screen flex items-center justify-center bg-zinc-50 font-sans p-8 text-black">
+			<div className="w-full max-w-md border-2 border-gray-300 rounded-md bg-white p-6 text-black">
+				<h1 className="text-2xl font-semibold mb-4 text-black">専門家リクエスト</h1>
 
 				<form onSubmit={handleSubmit} className="space-y-4">
 					<div>
-						<label className="block text-sm font-medium mb-1">お名前</label>
+						<label className="block text-sm font-medium mb-1 text-black">お名前</label>
 						<input
 							value={name}
 							onChange={(e) => setName(e.target.value)}
-							className="w-full px-3 py-2 border rounded-md focus:outline-none"
+							className="w-full px-3 py-2 border rounded-md focus:outline-none bg-white text-black"
 							placeholder="例：山田 太郎"
 						/>
 					</div>
 
 					<div>
-						<label className="block text-sm font-medium mb-1">所属（任意）</label>
+						<label className="block text-sm font-medium mb-1 text-black">所属（任意）</label>
 						<input
 							value={affiliation}
 							onChange={(e) => setAffiliation(e.target.value)}
-							className="w-full px-3 py-2 border rounded-md focus:outline-none"
+							className="w-full px-3 py-2 border rounded-md focus:outline-none bg-white text-black"
 							placeholder="例：○○大学 / △△研究所"
 						/>
 					</div>
 
 					<div>
-						<label className="block text-sm font-medium mb-1">メールアドレス</label>
+						<label className="block text-sm font-medium mb-1 text-black">メールアドレス</label>
 						<input
 							type="email"
 							value={email}
 							onChange={(e) => setEmail(e.target.value)}
-							className="w-full px-3 py-2 border rounded-md focus:outline-none"
+							className="w-full px-3 py-2 border rounded-md focus:outline-none bg-white text-black"
 							placeholder="you@example.com"
 						/>
 					</div>
 
 					<div>
-						<label className="block text-sm font-medium mb-1">メッセージ</label>
+						<label className="block text-sm font-medium mb-1 text-black">メッセージ</label>
 						<textarea
 							value={message}
 							onChange={(e) => setMessage(e.target.value)}
-							className="w-full px-3 py-2 border rounded-md focus:outline-none"
+							className="w-full px-3 py-2 border rounded-md focus:outline-none bg-white text-black"
 							placeholder="ご希望の内容や自己紹介などを入力してください。"
 							rows={5}
 						/>
@@ -153,7 +150,7 @@ export default function ExpertRequestPage() {
 					<div className="grid grid-cols-1 md:grid-cols-3 gap-3 items-center">
 						<button
 							type="submit"
-							className="w-full px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors"
+							className="w-full px-4 py-2 bg-blue-200 text-black rounded-md hover:bg-blue-300 transition-colors"
 							disabled={loading}
 						>
 							{loading ? "送信中…" : "リクエストを送信する"}
@@ -161,7 +158,7 @@ export default function ExpertRequestPage() {
 
 						<div className="md:col-span-2 flex justify-between">
 							<div className="flex justify-center md:justify-center">
-								<Link href="/" className="px-3 py-2 text-sm text-blue-600 hover:underline border rounded-md bg-white hover:bg-gray-50">
+								<Link href="/" className="px-3 py-2 text-sm text-black hover:underline border rounded-md bg-white hover:bg-gray-50">
 									ホームへ戻る
 								</Link>
 							</div>
@@ -169,7 +166,7 @@ export default function ExpertRequestPage() {
 							<div className="flex justify-end md:justify-end">
 								<Link
 									href="/login"
-									className="px-3 py-2 border rounded-md text-sm bg-gray-50 hover:bg-gray-100"
+									className="px-3 py-2 border rounded-md text-sm bg-white hover:bg-gray-50 text-black"
 								>
 									ログイン画面へ
 								</Link>

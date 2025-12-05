@@ -64,7 +64,7 @@ const FinishPage = () => {
             <div style={{
               fontSize: '18px',
               fontWeight: 'bold',
-              color: '#333'
+              color: '#000'
             }}>
               ありがとうございます。<br />
               投稿が完了しました。
@@ -82,9 +82,9 @@ const FinishPage = () => {
                 gap: '5px',
               }}
             >
-              <div style={{ width: '30px', height: '3px', background: '#333', borderRadius: '2px' }} />
-              <div style={{ width: '30px', height: '3px', background: '#333', borderRadius: '2px' }} />
-              <div style={{ width: '30px', height: '3px', background: '#333', borderRadius: '2px' }} />
+              <div style={{ width: '30px', height: '3px', background: '#000', borderRadius: '2px' }} />
+              <div style={{ width: '30px', height: '3px', background: '#000', borderRadius: '2px' }} />
+              <div style={{ width: '30px', height: '3px', background: '#000', borderRadius: '2px' }} />
             </button>
           </div>
 
@@ -93,7 +93,7 @@ const FinishPage = () => {
             <div style={{
               fontSize: '16px',
               fontWeight: 'bold',
-              color: '#333',
+              color: '#000',
               marginBottom: '16px'
             }}>
               関連質問はこちら↓
@@ -111,7 +111,7 @@ const FinishPage = () => {
                   border: '2px solid #999',
                   borderRadius: '4px',
                   fontSize: '16px',
-                  color: '#333',
+                  color: '#000',
                   cursor: 'pointer',
                   textAlign: 'left',
                   transition: 'background 0.2s, transform 0.1s',
@@ -142,9 +142,9 @@ const FinishPage = () => {
                     onClick={handleMoreQuestions}
                     style={{
                       background: 'none',
-                      color: '#333',
+                      color: '#000',
                       border: 'none',
-                      borderBottom: '1px solid #333',
+                      borderBottom: '1px solid #000',
                       padding: '4px 0',
                       fontSize: '14px',
                       cursor: 'pointer'
@@ -159,7 +159,7 @@ const FinishPage = () => {
                 onClick={handleBackToList}
                 style={{
                   background: 'white',
-                  color: '#333',
+                  color: '#000',
                   border: '2px solid #999',
                   padding: '8px 20px',
                   fontSize: '16px',
