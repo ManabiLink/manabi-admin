@@ -17,8 +17,8 @@ export default function Home() {
       <main className="flex flex-row w-full gap-4 py-32 px-16 bg-white">
         <div className="flex-1 h-[60vh] min-h-[40vh] border-2 border-black rounded-md p-4 flex flex-col justify-between">
           <div>
-            <h2>最近の投稿</h2>
-            <p>ここに最近の投稿が表示されます。</p>
+            <h2 className="text-black">最近の投稿</h2>
+            <p className="text-black">ここに最近の投稿が表示されます。</p>
           </div>
 
           <div className="flex flex-col gap-2">
@@ -30,7 +30,7 @@ export default function Home() {
             </ProtectedLink>
           
             <ProtectedLink
-              href="/post"
+              href="/article"
               className="inline-block px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors text-center"
             >
               申請記事一覧へ
@@ -40,8 +40,8 @@ export default function Home() {
 
         <div className="flex-1 h-[60vh] min-h-[40vh] border-2 border-black rounded-md p-4 flex flex-col justify-between">
           <div>
-            <h2>新着の質問</h2>
-            <p>ここに最近の投稿が表示されます。</p>
+            <h2 className="text-black">新着の質問</h2>
+            <p className="text-black">ここに最近の投稿が表示されます。</p>
           </div>
           <ProtectedLink
             href="/question"
@@ -53,8 +53,8 @@ export default function Home() {
         
         <div className="flex-1 h-[60vh] min-h-[40vh] border-2 border-black rounded-md p-4 flex flex-col justify-between">
           <div>
-            <h2>医療関係</h2>
-            <p>ここに最近の投稿が表示されます。</p>
+            <h2 className="text-black">医療関係</h2>
+            <p className="text-black">ここに最近の投稿が表示されます。</p>
           </div>
           <ProtectedLink
             href="/medical"
