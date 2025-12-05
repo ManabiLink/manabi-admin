@@ -2,64 +2,56 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import supabase from "@/lib/supabaseClient";
 
-export default function ProtectedLink({ href, className = "", children, ...props }) {
-  const [isAuth, setIsAuth] = useState(null);
-  const pathname = usePathname();
+export default function ProtectedLink({ href, children, className = "" }) {
   const router = useRouter();
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     let mounted = true;
+
     (async () => {
       try {
-        const { data } = await supabase.auth.getUser();
-        if (!mounted) return;
-        setIsAuth(!!data?.user);
-      } catch (e) {
-          if (!mounted) return;
-        setIsAuth(false);
+        const { data } = await supabase.auth.getSession();
+        if (mounted) {
+          setIsAuthenticated(!!data?.session);
+          setLoading(false);
+        }
+      } catch (err) {
+        console.error("Auth check error:", err);
+        if (mounted) {
+          setIsAuthenticated(false);
+          setLoading(false);
+        }
       }
     })();
+
+    const { data: { subscription } = {} } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (mounted) setIsAuthenticated(!!session);
+    });
+
     return () => {
       mounted = false;
+      if (subscription?.unsubscribe) subscription.unsubscribe();
     };
   }, []);
 
   const handleClick = (e) => {
-      if (e) e.preventDefault();
-    // 認証済みなら目的地へ
-    if (isAuth) {
-      router.push(href);
+    if (!isAuthenticated && !loading) {
+      e.preventDefault();
+      router.push("/"); // ← ここを /login から / に変更
       return;
-    }
-
-    // 未ログイン時のリダイレクトルール:
-    // - ホーム (`/`) からの遷移 -> `/login`
-    // - それ以外 -> `/`
-    if (pathname !== "/" && pathname !== "/login" && pathname !== "/register") {
-      router.push("/");
-    } else {
-      router.push("/login");
     }
   };
 
-  const disabledClass = "grayscale opacity-70 pointer-events-auto"; // pointer-events-auto so button still clickable
-  const combinedClass = `${className} ${isAuth === false ? disabledClass : ""}`.trim();
+  if (loading) return <Link href={href} className={className}>{children}</Link>;
 
-  if (isAuth) {
-    return (
-      <Link href={href} className={className} {...props}>
-        {children}
-      </Link>
-    );
-  }
-
-  // 未ログイン: 見た目はグレースケールだがクリックでリダイレクト
   return (
-    <button type="button" onClick={handleClick} className={combinedClass} {...props}>
+    <Link href={href} onClick={handleClick} className={className}>
       {children}
-    </button>
+    </Link>
   );
 }

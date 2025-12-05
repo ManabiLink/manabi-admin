@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 
 export const metadata = {
   title: "Manabi admin",
-  description: "まなびリンクの管理者専用ページです",
+  description: "まなびリンクの管理者専用ページです",  
 };
 
 export default function RootLayout({ children }) {

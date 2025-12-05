@@ -37,7 +37,7 @@ const OpinionPage = () => {
           style={{
             fontSize: "18px",
             lineHeight: "1.8",
-            color: "#333",
+            color: "#000",
             marginBottom: "40px"
           }}
         >
