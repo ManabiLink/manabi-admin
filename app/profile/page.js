@@ -1,3 +1,5 @@
+//プロフィール設定画面
+
 "use client";
 
 import { useEffect, useState } from "react";

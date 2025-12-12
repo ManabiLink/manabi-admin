@@ -1,3 +1,5 @@
+//お問い合わせフォーム確認ページ
+
 "use client";
 
 import React, { useState } from "react";
@@ -255,7 +257,7 @@ export default function DevFormPage() {
                 </p>
 
                 <button
-                  onClick={() => router.push("/feedback")}
+                  onClick={() => router.push("/")}
                   style={{
                     position: "absolute",
                     right: "20px",

@@ -1,3 +1,5 @@
+//カレンダー
+
 "use client";
 
 import { useEffect, useState } from "react";
@@ -31,7 +33,11 @@ export default function MedRecordCalendar({ userId = "testUser" }) {
         console.error("Supabase load error:", error);
       } else if (data) {
         data.forEach((row) => {
-          newRecords[row.date] = { medicine: row.medicine, dosage: row.dosage, memo: row.memo };
+          newRecords[row.date] = {
+            medicine: row.medicine,
+            dosage: row.dosage,
+            memo: row.memo,
+          };
         });
       }
 
@@ -44,7 +50,9 @@ export default function MedRecordCalendar({ userId = "testUser" }) {
   const handleOpenModal = (date) => {
     setSelectedDate(date);
     const key = date.format("YYYY-MM-DD");
-    setForm(medRecords[key] || { medicine: "", dosage: "", memo: "" });
+    setForm(
+      medRecords[key] || { medicine: "", dosage: "", memo: "" }
+    );
   };
 
   // ---- Supabase に保存（upsert） ----
@@ -60,7 +68,9 @@ export default function MedRecordCalendar({ userId = "testUser" }) {
       memo: form.memo,
     };
 
-    const { error } = await supabase.from("medRecords").upsert(payload, { onConflict: ["user_id", "date"] });
+    const { error } = await supabase
+      .from("medRecords")
+      .upsert(payload, { onConflict: ["user_id", "date"] });
 
     if (error) {
       console.error("Supabase save error:", error);
@@ -69,7 +79,11 @@ export default function MedRecordCalendar({ userId = "testUser" }) {
 
     setMedRecords({
       ...medRecords,
-      [key]: { medicine: form.medicine, dosage: form.dosage, memo: form.memo },
+      [key]: {
+        medicine: form.medicine,
+        dosage: form.dosage,
+        memo: form.memo,
+      },
     });
 
     setSelectedDate(null);
@@ -77,7 +91,9 @@ export default function MedRecordCalendar({ userId = "testUser" }) {
 
   return (
     <div className="min-h-screen bg-gray-50 p-8">
-      <h1 className="text-3xl font-bold mb-6 text-black">お薬手帳（医療従事者）</h1>
+      <h1 className="text-3xl font-bold mb-6 text-black">
+        お薬手帳（医療従事者）
+      </h1>
 
       {/* 月ナビゲーション */}
       <div className="flex justify-between items-center mb-6 bg-white p-4 rounded-lg border-2 border-gray-300">
@@ -88,7 +104,9 @@ export default function MedRecordCalendar({ userId = "testUser" }) {
           前の月
         </button>
 
-        <h2 className="text-2xl font-bold text-black">{currentMonth.format("YYYY年 MM月")}</h2>
+        <h2 className="text-2xl font-bold text-black">
+          {currentMonth.format("YYYY年 MM月")}
+        </h2>
 
         <button
           className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors font-semibold"
@@ -100,8 +118,13 @@ export default function MedRecordCalendar({ userId = "testUser" }) {
 
       {/* カレンダー */}
       <div className="grid grid-cols-7 gap-2 bg-white p-4 rounded-lg shadow-lg border-2 border-gray-300">
-        {["日","月","火","水","木","金","土"].map(d => (
-          <div key={d} className="text-center font-bold text-black text-lg py-2 border-b-2 border-gray-300">{d}</div>
+        {["日", "月", "火", "水", "木", "金", "土"].map((d) => (
+          <div
+            key={d}
+            className="text-center font-bold text-black text-lg py-2 border-b-2 border-gray-300"
+          >
+            {d}
+          </div>
         ))}
 
         {Array.from({ length: firstDay }).map((_, i) => (
@@ -118,14 +141,24 @@ export default function MedRecordCalendar({ userId = "testUser" }) {
               key={i}
               onClick={() => handleOpenModal(date)}
               className={`border-2 p-3 rounded min-h-[100px] text-left transition-colors ${
-                hasRecord ? "bg-blue-100 border-blue-500" : "bg-white border-gray-300 hover:border-blue-400"
+                hasRecord
+                  ? "bg-blue-100 border-blue-500"
+                  : "bg-white border-gray-300 hover:border-blue-400"
               }`}
             >
-              <div className="font-bold text-black text-lg">{i + 1}</div>
+              <div className="font-bold text-black text-lg">
+                {i + 1}
+              </div>
+
               {hasRecord && (
-                <div className="text-sm text-black mt-2 font-semibold">
-                  {medRecords[key].medicine}
-                </div>
+                <>
+                  <div className="text-sm text-black mt-2 font-semibold">
+                    {medRecords[key].medicine}
+                  </div>
+                  <div className="text-xs text-gray-600 mt-1">
+                    {medRecords[key].dosage}
+                  </div>
+                </>
               )}
             </button>
           );
@@ -141,33 +174,45 @@ export default function MedRecordCalendar({ userId = "testUser" }) {
             </h3>
 
             <label className="block mt-4">
-              <span className="font-semibold text-black block mb-2">薬名</span>
+              <span className="font-semibold text-black block mb-2">
+                薬名
+              </span>
               <input
                 type="text"
                 value={form.medicine}
-                onChange={(e) => setForm({ ...form, medicine: e.target.value })}
+                onChange={(e) =>
+                  setForm({ ...form, medicine: e.target.value })
+                }
                 className="w-full p-2 border-2 border-gray-300 rounded text-black placeholder-gray-400"
                 placeholder="薬の名前を入力"
               />
             </label>
 
             <label className="block mt-4">
-              <span className="font-semibold text-black block mb-2">服用量</span>
+              <span className="font-semibold text-black block mb-2">
+                服用量
+              </span>
               <input
                 type="text"
                 value={form.dosage}
-                onChange={(e) => setForm({ ...form, dosage: e.target.value })}
+                onChange={(e) =>
+                  setForm({ ...form, dosage: e.target.value })
+                }
                 className="w-full p-2 border-2 border-gray-300 rounded text-black placeholder-gray-400"
                 placeholder="用量を入力"
               />
             </label>
 
             <label className="block mt-4">
-              <span className="font-semibold text-black block mb-2">メモ</span>
+              <span className="font-semibold text-black block mb-2">
+                メモ
+              </span>
               <textarea
                 rows={3}
                 value={form.memo}
-                onChange={(e) => setForm({ ...form, memo: e.target.value })}
+                onChange={(e) =>
+                  setForm({ ...form, memo: e.target.value })
+                }
                 className="w-full p-2 border-2 border-gray-300 rounded text-black placeholder-gray-400"
                 placeholder="メモを入力"
               ></textarea>
@@ -180,6 +225,7 @@ export default function MedRecordCalendar({ userId = "testUser" }) {
               >
                 キャンセル
               </button>
+
               <button
                 onClick={handleSave}
                 className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors font-semibold"

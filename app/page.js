@@ -15,9 +15,10 @@ export default function Home() {
       </div>
       
       <main className="flex flex-row w-full gap-4 py-32 px-16 bg-white">
-        <div className="flex-1 h-[60vh] min-h-[40vh] border-2 border-black rounded-md p-4 flex flex-col justify-between">
+        {/* 最近の投稿 */}
+        <div className="flex-1 h-[60vh] min-h-[40vh] border-2 border-black rounded-md p-4 flex flex-col justify-between shadow-lg">
           <div>
-            <h2 className="text-black">最近の投稿</h2>
+            <h2 className="text-black text-2xl font-bold border-b pb-2 mb-3">最近の投稿</h2>
             <p className="text-black">ここに最近の投稿が表示されます。</p>
           </div>
 
@@ -38,9 +39,10 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="flex-1 h-[60vh] min-h-[40vh] border-2 border-black rounded-md p-4 flex flex-col justify-between">
+        {/* 新着の質問 */}
+        <div className="flex-1 h-[60vh] min-h-[40vh] border-2 border-black rounded-md p-4 flex flex-col justify-between shadow-lg">
           <div>
-            <h2 className="text-black">新着の質問</h2>
+            <h2 className="text-black text-2xl font-bold border-b pb-2 mb-3">新着の質問</h2>
             <p className="text-black">ここに最近の投稿が表示されます。</p>
           </div>
           <ProtectedLink
@@ -51,9 +53,10 @@ export default function Home() {
           </ProtectedLink>
         </div>
         
-        <div className="flex-1 h-[60vh] min-h-[40vh] border-2 border-black rounded-md p-4 flex flex-col justify-between">
+        {/* 医療関係 */}
+        <div className="flex-1 h-[60vh] min-h-[40vh] border-2 border-black rounded-md p-4 flex flex-col justify-between shadow-lg">
           <div>
-            <h2 className="text-black">医療関係</h2>
+            <h2 className="text-black text-2xl font-bold border-b pb-2 mb-3">医療関係</h2>
             <p className="text-black">ここに最近の投稿が表示されます。</p>
           </div>
           <ProtectedLink
