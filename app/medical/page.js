@@ -1,28 +1,70 @@
-//カレンダー
-
+// カレンダー
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import dayjs from "dayjs";
 import supabase from "@/lib/supabaseClient";
 
-export default function MedRecordCalendar({ userId = "testUser" }) {
+const JAPAN_HOLIDAYS = [
+  "2025-01-01",
+  "2025-01-13",
+  "2025-02-11",
+  "2025-02-23",
+  "2025-03-20",
+  "2025-04-29",
+  "2025-05-03",
+  "2025-05-04",
+  "2025-05-05",
+  "2025-07-21",
+  "2025-08-11",
+  "2025-09-15",
+  "2025-09-23",
+  "2025-10-13",
+  "2025-11-03",
+  "2025-11-23",
+];
+
+export default function MedRecordCalendar() {
   const [currentMonth, setCurrentMonth] = useState(dayjs());
   const [selectedDate, setSelectedDate] = useState(null);
   const [medRecords, setMedRecords] = useState({});
   const [form, setForm] = useState({ medicine: "", dosage: "", memo: "" });
+  const [userId, setUserId] = useState(null);
+
+  const router = useRouter();
 
   const daysInMonth = currentMonth.daysInMonth();
   const firstDay = currentMonth.startOf("month").day();
 
+  // ---- ログインユーザー取得 ----
+  useEffect(() => {
+    const getUser = async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      if (!user) {
+        router.push("/login");
+        return;
+      }
+
+      setUserId(user.id);
+    };
+
+    getUser();
+  }, [router]);
+
   // ---- Supabase からデータ読み込み ----
   useEffect(() => {
+    if (!userId) return;
+
     const loadMonth = async () => {
       const startDate = currentMonth.startOf("month").format("YYYY-MM-DD");
       const endDate = currentMonth.endOf("month").format("YYYY-MM-DD");
 
       const { data, error } = await supabase
-        .from("medRecords")
+        .from("medRecords_calendar")
         .select("*")
         .eq("user_id", userId)
         .gte("date", startDate)
@@ -50,14 +92,13 @@ export default function MedRecordCalendar({ userId = "testUser" }) {
   const handleOpenModal = (date) => {
     setSelectedDate(date);
     const key = date.format("YYYY-MM-DD");
-    setForm(
-      medRecords[key] || { medicine: "", dosage: "", memo: "" }
-    );
+    setForm(medRecords[key] || { medicine: "", dosage: "", memo: "" });
   };
 
   // ---- Supabase に保存（upsert） ----
   const handleSave = async () => {
-    if (!selectedDate) return;
+    if (!selectedDate || !userId) return;
+
     const key = selectedDate.format("YYYY-MM-DD");
 
     const payload = {
@@ -69,7 +110,7 @@ export default function MedRecordCalendar({ userId = "testUser" }) {
     };
 
     const { error } = await supabase
-      .from("medRecords")
+      .from("medRecords_calendar")
       .upsert(payload, { onConflict: ["user_id", "date"] });
 
     if (error) {
@@ -87,6 +128,15 @@ export default function MedRecordCalendar({ userId = "testUser" }) {
     });
 
     setSelectedDate(null);
+  };
+
+  const getDateColor = (date) => {
+    const day = date.day();
+    const key = date.format("YYYY-MM-DD");
+
+    if (JAPAN_HOLIDAYS.includes(key) || day === 0) return "text-red-600";
+    if (day === 6) return "text-blue-600";
+    return "text-black";
   };
 
   return (
@@ -118,10 +168,16 @@ export default function MedRecordCalendar({ userId = "testUser" }) {
 
       {/* カレンダー */}
       <div className="grid grid-cols-7 gap-2 bg-white p-4 rounded-lg shadow-lg border-2 border-gray-300">
-        {["日", "月", "火", "水", "木", "金", "土"].map((d) => (
+        {["日", "月", "火", "水", "木", "金", "土"].map((d, i) => (
           <div
             key={d}
-            className="text-center font-bold text-black text-lg py-2 border-b-2 border-gray-300"
+            className={`text-center font-bold text-lg py-2 border-b-2 border-gray-300 ${
+              i === 0
+                ? "text-red-600"
+                : i === 6
+                ? "text-blue-600"
+                : "text-black"
+            }`}
           >
             {d}
           </div>
@@ -146,20 +202,36 @@ export default function MedRecordCalendar({ userId = "testUser" }) {
                   : "bg-white border-gray-300 hover:border-blue-400"
               }`}
             >
-              <div className="font-bold text-black text-lg">
-                {i + 1}
-              </div>
+              <div className="flex min-h-[80px]">
+                {/* 日付（左・縦中央固定） */}
+                <div
+                  className={`w-10 flex items-center justify-center font-bold ${getDateColor(
+                    date
+                  )}`}
+                >
+                  {i + 1}
+                </div>
 
-              {hasRecord && (
-                <>
-                  <div className="text-sm text-black mt-2 font-semibold">
-                    {medRecords[key].medicine}
-                  </div>
-                  <div className="text-xs text-gray-600 mt-1">
-                    {medRecords[key].dosage}
-                  </div>
-                </>
-              )}
+                {/* 縦線 */}
+                <div className="border-l mx-2"></div>
+
+                {/* 内容 */}
+                <div className="flex-1">
+                  {hasRecord && (
+                    <>
+                      <div className="text-sm text-black font-semibold">
+                        {medRecords[key].medicine}
+                      </div>
+                      <div className="text-xs text-gray-600 mt-1">
+                        {medRecords[key].dosage}
+                      </div>
+                      <div className="text-xs text-gray-700 mt-1 whitespace-pre-wrap">
+                        {medRecords[key].memo}
+                      </div>
+                    </>
+                  )}
+                </div>
+              </div>
             </button>
           );
         })}
@@ -183,8 +255,8 @@ export default function MedRecordCalendar({ userId = "testUser" }) {
                 onChange={(e) =>
                   setForm({ ...form, medicine: e.target.value })
                 }
-                className="w-full p-2 border-2 border-gray-300 rounded text-black placeholder-gray-400"
                 placeholder="薬の名前を入力"
+                className="w-full p-2 border-2 border-gray-300 rounded text-black placeholder:text-gray-400"
               />
             </label>
 
@@ -198,8 +270,8 @@ export default function MedRecordCalendar({ userId = "testUser" }) {
                 onChange={(e) =>
                   setForm({ ...form, dosage: e.target.value })
                 }
-                className="w-full p-2 border-2 border-gray-300 rounded text-black placeholder-gray-400"
                 placeholder="用量を入力"
+                className="w-full p-2 border-2 border-gray-300 rounded text-black placeholder:text-gray-400"
               />
             </label>
 
@@ -213,22 +285,22 @@ export default function MedRecordCalendar({ userId = "testUser" }) {
                 onChange={(e) =>
                   setForm({ ...form, memo: e.target.value })
                 }
-                className="w-full p-2 border-2 border-gray-300 rounded text-black placeholder-gray-400"
                 placeholder="メモを入力"
+                className="w-full p-2 border-2 border-gray-300 rounded text-black placeholder:text-gray-400"
               ></textarea>
             </label>
 
             <div className="mt-6 flex justify-end space-x-3">
               <button
                 onClick={() => setSelectedDate(null)}
-                className="px-4 py-2 bg-gray-400 text-white rounded hover:bg-gray-500 transition-colors font-semibold"
+                className="px-4 py-2 bg-gray-400 text-white rounded hover:bg-gray-500 font-semibold"
               >
                 キャンセル
               </button>
 
               <button
                 onClick={handleSave}
-                className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors font-semibold"
+                className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 font-semibold"
               >
                 保存する
               </button>
